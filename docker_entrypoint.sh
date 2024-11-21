@@ -40,14 +40,15 @@ FNVER="27.1"
 
 BTCFN="bitcoin-$FNVER-$FNARCH-linux-$FNSUFFIX.tar.gz"
 BTCURL="https://bitcoincore.org/bin/bitcoin-core-$FNVER/$BTCFN"
-echo "Getting: "$BTCURL
+echo "Got: "$BTCURL
 
 #https://bitcoincore.org/bin/bitcoin-core-27.1/bitcoin-27.1-x86_64-linux-gnu.tar.gz
 #https://bitcoincore.org/bin/bitcoin-core-27.1/bitcoin-27.1-arm-linux-gnueabihf.tar.gz
 
-wget -O /tmp/bitcoin.tar.gz $BTCURL
-tar xzf /tmp/bitcoin.tar.gz -C /tmp
-cp /tmp/bitcoin-$FNVER/bin/bitcoin-cli /usr/local/bin
+# This is now done in BTCShell
+# wget -O /tmp/bitcoin.tar.gz $BTCURL
+# tar xzf /tmp/bitcoin.tar.gz -C /tmp
+# cp /tmp/bitcoin-$FNVER/bin/bitcoin-cli /usr/local/bin
 
 mkdir -p /data/bin
 echo 'export PATH=/data/bin:$PATH' >> /root/.bashrc
@@ -58,7 +59,7 @@ echo 'export PATH=/data/bin:$PATH' >> /root/.bashrc
 export SPACED_BITCOIN_RPC_USER=$BTC_RPC_USER
 export SPACED_BITCOIN_RPC_PASSWORD=$BTC_RPC_PASSWORD
 export SPACED_DATA_DIR='/data'
-export SPACED_CHAIN='testnet4'
+export SPACED_CHAIN='mainnet'
 export SPACED_BITCOIN_RPC_URL='http://'$BTC_RPC_HOST':'$BTC_RPC_PORT
 export SPACED_RPC_HOST='127.0.0.1'
 export SPACED_RPC_PORT='7224'
@@ -67,12 +68,12 @@ export SPACED_BLOCK_INDEX='true'
 echo "echo bitcoin-cli -getinfo" >> /root/.bashrc
 echo "echo spaces help" >> /root/.bashrc
 echo "echo" >> /root/.bashrc
-echo "echo 'For getting started info: https://spacesprotocol.org/#creating-a-wallet'" >> /root/.bashrc
+echo "echo 'For getting started info: https://docs.spacesprotocol.org/getting-started/quickstart'" >> /root/.bashrc
 echo "echo" >> /root/.bashrc
-echo "echo 'Launch the spaced daemon with the following.'" >> /root/.bashrc
-echo "echo 'screen -x spaced  = Monitor spaced <Ctrl-a> d to detach '" >> /root/.bashrc
+echo "echo 'Monitor the spaced daemon with the following. <Ctrl-a> d to detach from session.'" >> /root/.bashrc
+echo "echo 'screen -x spaced'" >> /root/.bashrc
 echo "alias spaces='space-cli --chain testnet4'" >> /root/.bashrc
-echo "screen -S spaced -d -m spaced &" >> /root/.bashrc
+echo "screen -S spaced -d -m spaced" >> /root/.bashrc
 echo "export PS1='spaces:\w$ '" >> /root/.bashrc
 # Launch background processes in their own screen detached
 # Need to do this in an if stmt so that it only happens once
@@ -124,69 +125,68 @@ echo 'rpcport='$BTC_RPC_PORT >> ~/.bitcoin/bitcoin.conf
 
 #PostgreSQL startup
 
-if [ -d "/data/postgresql/data" ]; then
-  echo "Skipping PostgreSL Initialization"
-  echo "Starting PostgreSL"
-  # rm -rf ./data/postgresql/data  for testing of init below
-  su postgres - -c '/usr/bin/pg_ctl start -D /data/postgresql/data'
-else 
-  echo "Initializing PostgreSL"
+# if [ -d "/data/postgresql/data" ]; then
+#   echo "Skipping PostgreSL Initialization"
+#   echo "Starting PostgreSL"
+#   # rm -rf ./data/postgresql/data  for testing of init below
+#   su postgres - -c '/usr/bin/pg_ctl start -D /data/postgresql/data'
+# else 
+#   echo "Initializing PostgreSL"
 
-  mkdir -p /data/postgresql/run
-  chown postgres:postgres /data/postgresql/run
+#   mkdir -p /data/postgresql/run
+#   chown postgres:postgres /data/postgresql/run
 
-  mkdir -p /data/postgresql/data
-  chown postgres:postgres /data/postgresql/data
-  chmod 0700 /data/postgresql/data
+#   mkdir -p /data/postgresql/data
+#   chown postgres:postgres /data/postgresql/data
+#   chmod 0700 /data/postgresql/data
 
-  su postgres - -c 'initdb -D /data/postgresql/data'
+#   su postgres - -c 'initdb -D /data/postgresql/data'
 
-  export POSTGRES_USER=postgres
-  export POSTGRES_PASSWORD=password
+#   export POSTGRES_USER=postgres
+#   export POSTGRES_PASSWORD=password
 
-  mkdir -p /run/postgresql
-  chown postgres:postgres /run/postgresql
-  # su postgres - -c 'echo "host all all 0.0.0.0/0 md5" >> /data/postgresql/data/pg_hba.conf'
-  # su postgres - -c 'echo "listen_addresses='"'"'*'"'"'" >> /data/postgresql/data/postgresql.conf'
-  echo "Starting PostgreSL"
+#   mkdir -p /run/postgresql
+#   chown postgres:postgres /run/postgresql
+#   # su postgres - -c 'echo "host all all 0.0.0.0/0 md5" >> /data/postgresql/data/pg_hba.conf'
+#   # su postgres - -c 'echo "listen_addresses='"'"'*'"'"'" >> /data/postgresql/data/postgresql.conf'
+#   echo "Starting PostgreSL"
 
-  su postgres - -c '/usr/bin/pg_ctl start -D /data/postgresql/data'
-  echo "Waiting 3 secs for things to warm up."
-  sleep 3
-  su postgres - -c '/usr/bin/psql -c "create database spacesprotocol_explorer;"'
+#   su postgres - -c '/usr/bin/pg_ctl start -D /data/postgresql/data'
+#   echo "Waiting 3 secs for things to warm up."
+#   sleep 3
+#   su postgres - -c '/usr/bin/psql -c "create database spacesprotocol_explorer;"'
 
-  echo "Initializing Schema"
+#   echo "Initializing Schema"
 
-  # git clone in the Docker file..
-  # This is in spaces-explorer/indexer : Prompts to continue...
-  cd /root/spaces-explorer/indexer
-  npm i
-  cp .env.example .env
-  # su postgres - -c 'npx drizzle-kit push'
-  npx drizzle-kit push
-  # npm run start
+#   # git clone in the Docker file..
+#   # This is in spaces-explorer/indexer : Prompts to continue...
+#   cd /root/spaces-explorer/indexer
+#   npm i
+#   cp .env.example .env
+#   # su postgres - -c 'npx drizzle-kit push'
+#   npx drizzle-kit push
+#   # npm run start
 
-  # Prep the explorer
-  cd /root/spaces-explorer/explorer
-  npm i
-  cp .env.example .env
-  # npm run start
+#   # Prep the explorer
+#   cd /root/spaces-explorer/explorer
+#   npm i
+#   cp .env.example .env
+#   # npm run start
 
-  cd
+#   cd
 
-  export POSTGRES_DB=spacesprotocol_explorer
-fi
+#   export POSTGRES_DB=spacesprotocol_explorer
+# fi
 
 # Show that the tables exist
-psql --username=$POSTGRES_USER --dbname=$POSTGRES_DB --command='\dt'
+# psql --username=$POSTGRES_USER --dbname=$POSTGRES_DB --command='\dt'
 
-export DB_URL=postgres://postgres:password@127.0.0.1:5432/spacesprotocol_explorer
-export NETWORK=testnet4
-export SPACES_STARTING_BLOCKHEIGHT=38580
+# export DB_URL=postgres://postgres:password@127.0.0.1:5432/spacesprotocol_explorer
+export NETWORK=mainnet
+export SPACES_STARTING_BLOCKHEIGHT=871220
 export BITCOIN_RPC_URL=$SPACED_BITCOIN_RPC_URL
 export BITCOIN_RPC_USER=$SPACED_BITCOIN_RPC_USER
 export BITCOIN_RPC_PASSWORD=$SPACED_BITCOIN_RPC_PASSWORD
 # export SPACED_RPC_URL='http://127.0.0.1:7224'
-
 
 exec /usr/bin/gotty --port 8080 -c $GOTTY_CREDS --permit-write --reconnect /bin/bash
