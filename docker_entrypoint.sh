@@ -61,9 +61,9 @@ export SPACED_BITCOIN_RPC_PASSWORD=$BTC_RPC_PASSWORD
 export SPACED_DATA_DIR='/data'
 export SPACED_CHAIN='mainnet'
 export SPACED_BITCOIN_RPC_URL='http://'$BTC_RPC_HOST':'$BTC_RPC_PORT
-export SPACED_RPC_HOST='127.0.0.1'
-export SPACED_RPC_PORT='7224'
-export SPACED_RPC_URL='http://'$SPACED_RPC_HOST':'$SPACED_RPC_PORT
+export SPACED_RPC_BIND='127.0.0.1'
+export SPACED_RPC_PORT='7225'
+export SPACED_RPC_URL='http://'$SPACED_RPC_BIND':'$SPACED_RPC_PORT
 export SPACED_BLOCK_INDEX='true'
 echo "echo bitcoin-cli -getinfo" >> /root/.bashrc
 echo "echo spaces help" >> /root/.bashrc
@@ -72,7 +72,7 @@ echo "echo 'For getting started info: https://docs.spacesprotocol.org/getting-st
 echo "echo" >> /root/.bashrc
 echo "echo 'Monitor the spaced daemon with the following. <Ctrl-a> d to detach from session.'" >> /root/.bashrc
 echo "echo 'screen -x spaced'" >> /root/.bashrc
-echo "alias spaces='space-cli --chain testnet4'" >> /root/.bashrc
+echo "alias spaces='space-cli --chain mainnet'" >> /root/.bashrc
 echo "screen -S spaced -d -m spaced" >> /root/.bashrc
 echo "export PS1='spaces:\w$ '" >> /root/.bashrc
 # Launch background processes in their own screen detached
