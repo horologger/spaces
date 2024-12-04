@@ -58,6 +58,9 @@ RUN apk add --no-cache \
     screen \
     htop \
     bash \
+    miller \
+    nodejs \
+    npm \
     && rm -f /var/cache/apk/*
 
 # Copy built binaries from builder stage
