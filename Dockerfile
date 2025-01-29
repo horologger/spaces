@@ -1,4 +1,4 @@
-FROM horologger/btcshell:v0.0.3 AS builder
+FROM horologger/btcshell:v0.0.5 AS builder
 LABEL maintainer="horologger <horologger@protonmail.com>"
 
 ARG TARGETPLATFORM
@@ -8,7 +8,7 @@ RUN echo "Spaces Build Starting...$TARGETPLATFORM"
 
 ARG PG_ENABLE
 
-# docker buildx build --platform linux/arm64,linux/amd64 --tag horologger/spaces:v0.0.3 --output "type=registry" . --build-arg POSTGRESQL_ENABLE=true
+# docker buildx build --platform linux/arm64,linux/amd64 --tag horologger/spaces:v0.0.6 --output "type=registry" . --build-arg POSTGRESQL_ENABLE=true
 RUN if [ "$PG_ENABLE" = "true" ] ; then \
     echo "PG ENABLED"; \
 else \
@@ -17,16 +17,27 @@ fi
 
 
 # Start9 Packaging
-RUN apk add --no-cache yq cargo pkgconfig openssh openssl openssl-dev openssl-libs-static gcompat git; \
+# Use this one in order got get the proper version of cargo
+RUN apk update && apk upgrade && apk add --no-cache cargo --repository=https://dl-cdn.alpinelinux.org/alpine/edge/main
+RUN apk add --no-cache yq pkgconfig openssh openssl openssl-dev openssl-libs-static gcompat git; \
     rm -f /var/cache/apk/*
+
+# Once the main version of cargo is at least 1.8
+# RUN apk add --no-cache yq cargo pkgconfig openssh openssl openssl-dev openssl-libs-static gcompat git; \
+#     rm -f /var/cache/apk/*
 
 RUN if [ "$PG_ENABLE" = "true" ] ; then \
     apk add npm postgresql; rm -f /var/cache/apk/*;  \
 fi    
 
+
 # RUN git clone https://github.com/spacesprotocol/spaced && cd spaced ; \
-RUN git clone https://github.com/horologger/spaced && cd spaced ; \
-    cargo build --release ; \
+# RUN git clone https://github.com/horologger/spaced && cd spaced ; \
+#     # cargo build --release ; \
+#     cargo install --path node --locked ; cd ..
+# # echo 'export PATH="$HOME/.cargo/bin:$PATH"' >> ~/.bashrc
+
+RUN git clone https://github.com/horologger/spaced && cd spaced ; \ 
     cargo install --path node --locked ; cd ..
 # echo 'export PATH="$HOME/.cargo/bin:$PATH"' >> ~/.bashrc
 
@@ -47,7 +58,7 @@ RUN git clone https://github.com/horologger/spaced && cd spaced ; \
 #     cargo install --path node --locked
 
 # Final stage
-FROM horologger/btcshell:v0.0.3
+FROM horologger/btcshell:v0.0.5
 
 # Required runtime dependencies based on docker_entrypoint.sh usage
 RUN apk add --no-cache \
@@ -61,15 +72,19 @@ RUN apk add --no-cache \
     miller \
     nodejs \
     npm \
+    iperf \
+    nano \
     && rm -f /var/cache/apk/*
 
 # Copy built binaries from builder stage
+# RUN mkdir -p /root/.cargo/bin
 COPY --from=builder /root/.cargo/bin/spaced /root/.cargo/bin/spaced
 COPY --from=builder /root/.cargo/bin/space-cli /root/.cargo/bin/space-cli
 
 COPY --chmod=755 docker_entrypoint.sh /usr/local/bin/
 
-EXPOSE 22253
+EXPOSE 22253/udp
+EXPOSE 22253/tcp
 EXPOSE 5173
 EXPOSE 3000
 

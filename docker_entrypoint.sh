@@ -77,11 +77,11 @@ echo "screen -S spaced -d -m spaced" >> /root/.bashrc
 echo "export PS1='spaces:\w$ '" >> /root/.bashrc
 # Launch background processes in their own screen detached
 # Need to do this in an if stmt so that it only happens once
-echo "if [[ \$(screen -ls | grep htop | wc -l) > 0 ]]; then" >> /root/.bashrc
-echo "  echo 'already running htop'" >> /root/.bashrc                     
-echo "else" >> /root/.bashrc                                              
-echo "  /usr/bin/screen -S htop -d -m /usr/bin/htop" >> /root/.bashrc     
-echo "fi" >> /root/.bashrc  
+# echo "if [[ \$(screen -ls | grep htop | wc -l) > 0 ]]; then" >> /root/.bashrc
+# echo "  echo 'already running htop'" >> /root/.bashrc                     
+# echo "else" >> /root/.bashrc                                              
+# echo "  /usr/bin/screen -S htop -d -m /usr/bin/htop" >> /root/.bashrc     
+# echo "fi" >> /root/.bashrc  
 
 # /usr/bin/screen -S indexer -d -m /usr/bin/npm run start
 
