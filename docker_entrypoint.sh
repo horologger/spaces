@@ -61,6 +61,10 @@ export SPACED_BITCOIN_RPC_PASSWORD=$BTC_RPC_PASSWORD
 export SPACED_DATA_DIR='/data'
 export SPACED_CHAIN='mainnet'
 export SPACED_BITCOIN_RPC_URL='http://'$BTC_RPC_HOST':'$BTC_RPC_PORT
+export BITCOIN_RPCUSER=$BTC_RPC_USER
+export BITCOIN_RPCPASSWORD=$BTC_RPC_PASSWORD
+export BITCOIN_RPCCONNECT=$BTC_RPC_HOST
+export BITCOIN_RPCPORT=$BTC_RPC_PORT
 export SPACED_RPC_BIND='127.0.0.1'
 export SPACED_RPC_PORT='7225'
 export SPACED_RPC_URL='http://'$SPACED_RPC_BIND':'$SPACED_RPC_PORT
@@ -73,7 +77,7 @@ echo "echo" >> /root/.bashrc
 echo "echo 'Monitor the spaced daemon with the following. <Ctrl-a> d to detach from session.'" >> /root/.bashrc
 echo "echo 'screen -x spaced'" >> /root/.bashrc
 echo "alias spaces='space-cli --chain mainnet'" >> /root/.bashrc
-echo "screen -S spaced -d -m spaced" >> /root/.bashrc
+# echo "screen -S spaced -d -m spaced" >> /root/.bashrc
 echo "export PS1='spaces:\w$ '" >> /root/.bashrc
 # Launch background processes in their own screen detached
 # Need to do this in an if stmt so that it only happens once
@@ -87,8 +91,9 @@ echo "export PS1='spaces:\w$ '" >> /root/.bashrc
 
 #echo "/usr/bin/screen -S spaced -d -m /root/.cargo/bin/spaced" >> /root/.bashrc
 echo "if [[ \$(screen -ls | grep spaced | wc -l) > 0 ]]; then" >> /root/.bashrc
-echo "  echo 'already running spaced'" >> /root/.bashrc                     
+echo "  echo 'Spaced is already running.'" >> /root/.bashrc                     
 echo "else" >> /root/.bashrc                                              
+echo "  echo 'Starting spaced.'" >> /root/.bashrc                     
 echo "  /usr/bin/screen -S spaced -d -m /root/.cargo/bin/spaced" >> /root/.bashrc     
 echo "fi" >> /root/.bashrc                                            
 

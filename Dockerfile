@@ -1,4 +1,4 @@
-FROM horologger/btcshell:v0.0.5 AS builder
+FROM horologger/btcshell:v0.0.6 AS builder
 LABEL maintainer="horologger <horologger@protonmail.com>"
 
 ARG TARGETPLATFORM
@@ -8,7 +8,7 @@ RUN echo "Spaces Build Starting...$TARGETPLATFORM"
 
 ARG PG_ENABLE
 
-# docker buildx build --platform linux/arm64,linux/amd64 --tag horologger/spaces:v0.0.6 --output "type=registry" . --build-arg POSTGRESQL_ENABLE=true
+# docker buildx build --platform linux/arm64,linux/amd64 --tag horologger/spaces:v0.0.7 --output "type=registry" . --build-arg POSTGRESQL_ENABLE=true
 RUN if [ "$PG_ENABLE" = "true" ] ; then \
     echo "PG ENABLED"; \
 else \
@@ -37,8 +37,11 @@ fi
 #     cargo install --path node --locked ; cd ..
 # # echo 'export PATH="$HOME/.cargo/bin:$PATH"' >> ~/.bashrc
 
+# RUN git clone https://github.com/horologger/spaced && cd spaced ; \ 
+# cargo install --path node --locked ; cd ..
+
 RUN git clone https://github.com/horologger/spaced && cd spaced ; \ 
-    cargo install --path node --locked ; cd ..
+    cargo install --path client --locked ; cd ..
 # echo 'export PATH="$HOME/.cargo/bin:$PATH"' >> ~/.bashrc
 
 # Get the Spaces Explorer code but don't do anthing yet.
@@ -58,7 +61,7 @@ RUN git clone https://github.com/horologger/spaced && cd spaced ; \
 #     cargo install --path node --locked
 
 # Final stage
-FROM horologger/btcshell:v0.0.5
+FROM horologger/btcshell:v0.0.6
 
 # Required runtime dependencies based on docker_entrypoint.sh usage
 RUN apk add --no-cache \
