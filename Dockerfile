@@ -60,6 +60,8 @@ RUN git clone https://github.com/horologger/spaced && cd spaced ; \
 #     cargo build --release ; \
 #     cargo install --path node --locked
 
+
+
 # Final stage
 FROM horologger/btcshell:v0.0.6
 
@@ -77,12 +79,16 @@ RUN apk add --no-cache \
     npm \
     iperf \
     nano \
+    git \
     && rm -f /var/cache/apk/*
 
 # Copy built binaries from builder stage
 # RUN mkdir -p /root/.cargo/bin
 COPY --from=builder /root/.cargo/bin/spaced /root/.cargo/bin/spaced
 COPY --from=builder /root/.cargo/bin/space-cli /root/.cargo/bin/space-cli
+
+RUN git clone https://github.com/horologger/fabric && cd fabric ; \ 
+    npm ci ; cd ..
 
 COPY --chmod=755 docker_entrypoint.sh /usr/local/bin/
 

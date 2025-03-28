@@ -77,6 +77,8 @@ echo "echo" >> /root/.bashrc
 echo "echo 'Monitor the spaced daemon with the following. <Ctrl-a> d to detach from session.'" >> /root/.bashrc
 echo "echo 'screen -x spaced'" >> /root/.bashrc
 echo "alias spaces='space-cli --chain mainnet'" >> /root/.bashrc
+echo "alias beam=\"node /root/fabric/dist/bin/beam.js\"" >> /root/.bashrc
+echo "alias fabric=\"node /root/fabric/dist/bin/fabric.js\"" >> /root/.bashrc
 # echo "screen -S spaced -d -m spaced" >> /root/.bashrc
 echo "export PS1='spaces:\w$ '" >> /root/.bashrc
 # Launch background processes in their own screen detached
@@ -122,11 +124,12 @@ echo 'export PATH="$HOME/.cargo/bin:$PATH"' >> ~/.bashrc
 #echo 'export PATH=/data/bin:$PATH' >> /data/setpath
 #chmod a+x /data/setpath
 
-mkdir -p ~/.bitcoin
-echo 'rpcuser='$BTC_RPC_USER > ~/.bitcoin/bitcoin.conf
-echo 'rpcpassword='$BTC_RPC_PASSWORD >> ~/.bitcoin/bitcoin.conf
-echo 'rpcconnect='$BTC_RPC_HOST >> ~/.bitcoin/bitcoin.conf
-echo 'rpcport='$BTC_RPC_PORT >> ~/.bitcoin/bitcoin.conf
+# This is being done in /usr/bin/build_bitcoin_conf.sh triggered in .bashrc
+# mkdir -p ~/.bitcoin
+# echo 'rpcuser='$BTC_RPC_USER > ~/.bitcoin/bitcoin.conf
+# echo 'rpcpassword='$BTC_RPC_PASSWORD >> ~/.bitcoin/bitcoin.conf
+# echo 'rpcconnect='$BTC_RPC_HOST >> ~/.bitcoin/bitcoin.conf
+# echo 'rpcport='$BTC_RPC_PORT >> ~/.bitcoin/bitcoin.conf
 
 #PostgreSQL startup
 
